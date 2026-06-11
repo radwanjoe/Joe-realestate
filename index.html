@@ -22,12 +22,15 @@
         .property-image { position: relative; width: 100%; height: 220px; overflow: hidden; }
         .property-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .property-card:hover .property-image img { transform: scale(1.1); }
-        .badge { position: absolute; top: 15px; right: 15px; background: #1abc9c; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+        
+        .badge { position: absolute; top: 15px; right: 15px; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+        .badge-sale { background: #1abc9c; }
+        .badge-rent { background: #e67e22; }
 
         .property-details { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
         .price { color: #e74c3c; font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
         .title { font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; color: #2c3e50; }
-        .description { font-size: 0.9rem; color: #7f8c8d; margin-bottom: 15px; line-height: 1.6; }
+        .description { font-size: 0.9rem; color: #7f8c8d; margin-bottom: 15px; line-height: 1.6; height: 65px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 
         .features-icons { display: flex; justify-content: space-between; background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 0.85rem; color: #555; }
         .icon-item i { color: #1abc9c; margin-left: 5px; }
@@ -56,16 +59,17 @@
     </header>
 
     <div class="container">
-        <!-- كرت الشقة -->
+        
+        <!-- كرت الشقة 1 (المعروضة مسبقاً) -->
         <div class="property-card">
             <div class="property-image">
-                <span class="badge">للبيع</span>
+                <span class="badge badge-sale">للبيع</span>
                 <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=500&q=80" alt="شقة">
             </div>
             <div class="property-details">
                 <div class="price">150,000 $</div>
                 <h2 class="title">شقة فاخرة بإطلالة بحرية</h2>
-                <p class="description">شقة سكنية راقية بتتشطيب سوبر لوكس، تقع في منطقة حيوية وقريبة من كافة الخدمات الأساسية.</p>
+                <p class="description">شقة سكنية راقية بتشطيب سوبر لوكس، تقع في منطقة حيوية وقريبة من كافة الخدمات الأساسية والمراكز التجارية.</p>
                 
                 <div class="features-icons">
                     <div class="icon-item"><i class="fa-solid fa-bed"></i> 3 غرف</div>
@@ -82,6 +86,88 @@
                 </div>
             </div>
         </div>
+
+        <!-- كرت الشقة 2 (شقة عائلية واسعة) -->
+        <div class="property-card">
+            <div class="property-image">
+                <span class="badge badge-sale">للبيع</span>
+                <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=500&q=80" alt="شقة عائلية">
+            </div>
+            <div class="property-details">
+                <div class="price">210,000 $</div>
+                <h2 class="title">شقة عائلية فسيحة بحي راقي</h2>
+                <p class="description">شقة ممتازة للعائلات الكبيرة بمساحة واسعة وتوزيع ذكي للغرف، بالقرب من المدارس والحدائق العامة.</p>
+                
+                <div class="features-icons">
+                    <div class="icon-item"><i class="fa-solid fa-bed"></i> 4 غرف</div>
+                    <div class="icon-item"><i class="fa-solid fa-bath"></i> 3 حمامات</div>
+                    <div class="icon-item"><i class="fa-solid fa-ruler-combined"></i> 195م²</div>
+                </div>
+
+                <a href="apartment-details.html" class="view-details-btn"><i class="fa-solid fa-video"></i> عرض الفيديو والصور التفصيلية</a>
+
+                <div class="contact-buttons">
+                    <a href="https://wa.me/201234567890" target="_blank" class="btn-contact btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="tel:+201234567890" class="btn-contact btn-phone"><i class="fa-solid fa-phone"></i></a>
+                    <a href="https://facebook.com/yourpage" target="_blank" class="btn-contact btn-facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- كرت الشقة 3 (استوديو مودرن للإيجار) -->
+        <div class="property-card">
+            <div class="property-image">
+                <span class="badge badge-rent">للايجار</span>
+                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=500&q=80" alt="استوديو">
+            </div>
+            <div class="property-details">
+                <div class="price">650 $ / شهرياً</div>
+                <h2 class="title">استوديو مودرن مؤثث بالكامل</h2>
+                <p class="description">استوديو بتصميم عصري مخصص للشباب أو حديثي الزواج، مجهز بكامل الأجهزة الكهربائية والمكيفات بوسط المدينة.</p>
+                
+                <div class="features-icons">
+                    <div class="icon-item"><i class="fa-solid fa-bed"></i> 1 غرفة</div>
+                    <div class="icon-item"><i class="fa-solid fa-bath"></i> 1 حمام</div>
+                    <div class="icon-item"><i class="fa-solid fa-ruler-combined"></i> 65م²</div>
+                </div>
+
+                <a href="apartment-details.html" class="view-details-btn"><i class="fa-solid fa-video"></i> عرض الفيديو والصور التفصيلية</a>
+
+                <div class="contact-buttons">
+                    <a href="https://wa.me/201234567890" target="_blank" class="btn-contact btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="tel:+201234567890" class="btn-contact btn-phone"><i class="fa-solid fa-phone"></i></a>
+                    <a href="https://facebook.com/yourpage" target="_blank" class="btn-contact btn-facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- كرت الشقة 4 (بنتهاوس / رووف فاخر) -->
+        <div class="property-card">
+            <div class="property-image">
+                <span class="badge badge-sale">للبيع</span>
+                <img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=500&q=80" alt="رووف بنتهاوس">
+            </div>
+            <div class="property-details">
+                <div class="price">320,000 $</div>
+                <h2 class="title">شقة بنتهاوس (رووف) مع تراس خاص</h2>
+                <p class="description">إطلالة بانورامية ساحرة على المدينة مع تراس خارجي واسع مجهز لجلسات الشواء، تشطيبات فندقية فاخرة جداً.</p>
+                
+                <div class="features-icons">
+                    <div class="icon-item"><i class="fa-solid fa-bed"></i> 3 غرف</div>
+                    <div class="icon-item"><i class="fa-solid fa-bath"></i> 3 حمامات</div>
+                    <div class="icon-item"><i class="fa-solid fa-ruler-combined"></i> 220م²</div>
+                </div>
+
+                <a href="apartment-details.html" class="view-details-btn"><i class="fa-solid fa-video"></i> عرض الفيديو والصور التفصيلية</a>
+
+                <div class="contact-buttons">
+                    <a href="https://wa.me/201234567890" target="_blank" class="btn-contact btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="tel:+201234567890" class="btn-contact btn-phone"><i class="fa-solid fa-phone"></i></a>
+                    <a href="https://facebook.com/yourpage" target="_blank" class="btn-contact btn-facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <footer>

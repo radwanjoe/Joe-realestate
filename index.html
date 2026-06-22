@@ -63,7 +63,6 @@
         header h1 { font-size: 2.2rem; line-height: 1.4; margin-top: 15px; }
         header p { color: #1abc9c; margin-top: 10px; font-size: 1.1rem; }
 
-        /* Start Header Components Layout Code Block */
         .logo-wrapper {
             position: absolute;
             top: 20px;
@@ -92,7 +91,6 @@
             z-index: 10;
         }
         html[dir="ltr"] .controls-wrapper { left: auto; right: 20px; }
-        /* End Header Components Layout Code Block */
 
         .lang-btn, .theme-btn { 
             background: #1abc9c; 
@@ -135,15 +133,14 @@
             border-color: #1abc9c; 
         }
 
-        /* Start Responsive Image Adjustments Code Block */
         .property-image { 
             position: relative; 
             width: 100%; 
-            padding-top: 65%; /* نسبة ارتفاع مرنة ومتناسقة على اللاب توب والهاتف تمنع الفراغات بيضاء */
+            padding-top: 65%; 
             overflow: hidden; 
             background: #eef2f5; 
         }
-        .property-image img { 
+        .property-image img, .property-image video { 
             position: absolute;
             top: 0;
             left: 0;
@@ -153,12 +150,20 @@
             transition: transform 0.5s ease; 
         }
         .property-card:hover .property-image img { transform: scale(1.04); }
-        /* End Responsive Image Adjustments Code Block */
 
-        .badge { position: absolute; top: 15px; right: 15px; color: white; padding: 5px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; z-index: 2; }
+        /* تعديل كود الـ CSS لاستيعاب تفضيلات الألوان القادمة من الـ JS مباشرة */
+        .badge { 
+            position: absolute; 
+            top: 15px; 
+            right: 15px; 
+            color: white; 
+            padding: 5px 14px; 
+            border-radius: 20px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            z-index: 2; 
+        }
         html[dir="ltr"] .badge { right: auto; left: 15px; }
-        .badge-sale { background: #1abc9c; }
-        .badge-rent { background: #e67e22; }
 
         .property-details { padding: 22px; display: flex; flex-direction: column; flex-grow: 1; }
         
@@ -296,7 +301,6 @@
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbzPjN2Dyd5CxQtXNoRTbZ4xMUB6toG_W6iaiKmPQGZm5e5d7SEHLD7B9bTqbM-MPsIm/exec";
 
-// القاموس الشامل للمصفوفات واللغات متضمناً ترجمة محتوى الخطأ وبنية البيانات الأصلية للغات الإضافية
 const translations = {
     ar: {
         title: "شركة ود العقارية - WD Real Estate",
@@ -329,31 +333,31 @@ const translations = {
 let currentLang = "ar";
 let cachedProperties = [];
 
+const fallbackImages = [
+    "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&auto=format&fit=crop"
+];
+
 // Start Eye-Icon Randomized Status Code Block
 function initializeEyeAutomation() {
     const eyeElements = document.querySelectorAll('.live-counter-eye');
     
     eyeElements.forEach(eye => {
         function scheduleNextToggle() {
-            // توليد توقيت عشوائي يتراوح بين دقيقة (60,000ms) ونصف ساعة (1,800,000ms)
-            const randomTime = Math.floor(Math.random() * (1800000 - 60000 + 1)) + 60000;
+            const randomTime = Math.floor(Math.random() * (180000 - 60000 + 1)) + 60000;
             
             setTimeout(() => {
-                // عكس حالة الرؤية الحالية للأيقونة
                 if(eye.classList.contains('is-visible')) {
                     eye.classList.remove('is-visible');
                 } else {
                     eye.classList.add('is-visible');
                 }
-                // إعادة الجدولة الزمنية بشكل عشوائي مستمر
                 scheduleNextToggle();
             }, randomTime);
         }
-        
-        // إطلاق الجدولة التلقائية لأول مرة
         scheduleNextToggle();
-        
-        // ظهور أولي افتراضي لبعض العناصر لإضفاء حيوية مباشرة عند التحميل
         if(Math.random() > 0.5) {
             eye.classList.add('is-visible');
         }
@@ -361,7 +365,6 @@ function initializeEyeAutomation() {
 }
 // End Eye-Icon Randomized Status Code Block
 
-// دالة تصيير البيانات الهيكلية مع دعم حقول الترجمة المتقاطعة للوصف والعناوين
 function renderProperties(properties) {
     const container = document.getElementById("propertiesContainer");
     container.innerHTML = "";
@@ -371,31 +374,40 @@ function renderProperties(properties) {
         return;
     }
 
-    properties.forEach(property => {
-        // إدارة وتوزيع الحقول حسب تصفح اللغة الحالية (عربي / إنجليزي) وضمان جلب الأوصاف البديلة المترجمة
+    properties.forEach((property, index) => {
         const pName = currentLang === "ar" ? (property["الاسم"] || property["Name"]) : (property["Name"] || property["الاسم"]);
         const pDesc = currentLang === "ar" ? (property["الوصف"] || property["Description"] || "لا يوجد وصف متوفر حالياً.") : (property["Description"] || property["الوصف"] || "No description available.");
         const pType = currentLang === "ar" ? (property["النوع"] || property["Type"] || "للبيع") : (property["Type"] || property["النوع"] || "For Sale");
+        
+        // جلب لون خلفية الشارة ديناميكياً من الشيت أو التراجع للون الافتراضي
+        const badgeColor = property["لون العلامة"] || property["Badge Color"] || "#1abc9c";
         
         const pPrice = property["السعر"] || property["Price"] || "";
         const pRooms = property["الغرف"] || property["الغرفة"] || property["Rooms"] || 0;
         const pBaths = property["الحمامات"] || property["الحمام"] || property["Bathrooms"] || 0;
         const pArea = property["المساحة"] || property["Area"] || "";
-        const pImg = property["الصورة الرئيسية"] || property["Image"] || "https://via.placeholder.com/400x250";
-        const pId = property["id"] || property["ID"] || "";
         
+        const pImgOrVideo = property["الصورة الرئيسية"] || property["Image"] || property["فيديو"] || property["Video"] || "";
+        const pId = property["id"] || property["ID"] || "";
         const pWhatsapp = property["واتساب"] || property["Whatsapp"] || "";
         const pPhone = property["الهاتف"] || property["Phone"] || "";
         const pFacebook = property["فيسبوك"] || property["Facebook"] || "#";
 
-        const isRent = pType.includes("إيجار") || pType.toLowerCase().includes("rent");
-        const badgeClass = isRent ? "badge-rent" : "badge-sale";
+        let mediaHtml = "";
+        if (pImgOrVideo.endsWith(".mp4") || pImgOrVideo.includes("video")) {
+            mediaHtml = `<video src="${pImgOrVideo}" autoplay loop muted playsinline></video>`;
+        } else if (pImgOrVideo !== "") {
+            mediaHtml = `<img src="${pImgOrVideo}" alt="${pName}">`;
+        } else {
+            const randomImg = fallbackImages[index % fallbackImages.length];
+            mediaHtml = `<img src="${randomImg}" alt="${pName}">`;
+        }
 
         container.innerHTML += `
         <div class="property-card">
             <div class="property-image">
-                <span class="badge ${badgeClass}">${pType}</span>
-                <img src="${pImg}" alt="${pName}">
+                <span class="badge" style="background-color: ${badgeColor};">${pType}</span>
+                ${mediaHtml}
             </div>
             
             <div class="property-details">
@@ -434,7 +446,6 @@ function renderProperties(properties) {
         </div>`;
     });
 
-    // تشغيل محرك الأتمتة العشوائي لأيقونات العين بعد حقن العناصر بالـ DOM مباشرة
     initializeEyeAutomation();
 }
 
@@ -474,7 +485,6 @@ function toggleLanguage() {
         langText.innerText = "EN";
     }
 
-    // ترحيل الترجمات للعناصر الثابتة بالواجهة
     document.getElementById("pageTitle").innerText = translations[currentLang].title;
     document.getElementById("headerTitle").innerText = translations[currentLang].headerTitle;
     document.getElementById("headerSub").innerText = translations[currentLang].headerSub;
@@ -504,7 +514,6 @@ function toggleTheme() {
 
 document.addEventListener("DOMContentLoaded", loadProperties);
 
-// حماية الأكواد والمصادر البرمجية للموقع
 document.addEventListener('contextmenu', event => event.preventDefault());
 document.addEventListener('keydown', event => {
     if (event.key === 'F12' || event.keyCode === 123) event.preventDefault();

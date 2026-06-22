@@ -69,7 +69,7 @@
 </div>
 <script>
 // بداية مجموعة الإعدادات والروابط العامة
-const API_URL = "https://script.google.com/macros/s/AKfycbzPjN2Dyd5CxQtXNoRTbZ4xMUB6toG_W6iaiKmPQGZm5e5d7SEHLD7B9bTqbM-MPsIm/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwWyAhLic8IbD9FQDDltNfLjh0fn-Q39UaRNGm1Um0R7SZn08WggmC2wvmpBaBdsVVN/exec";
 const urlParams = new URLSearchParams(window.location.search);
 const propertyId = urlParams.get('id');
 const currentLang = urlParams.get('lang') || 'ar';
@@ -98,7 +98,12 @@ async function fetchPropertyDetails() {
     try {
         const response = await fetch(API_URL);
         const properties = await response.json();
-        const property = properties.find(p => String(p.id || p.ID) === String(propertyId));
+        
+        // تعديل أمان فحص المعرف: فحص الحقول بكافة الصيغ الممكنة وبدون حساسية لحالة الأحرف
+        const property = properties.find(p => {
+            const actualId = p["id"] || p["ID"] || p["Id"] || p["المعرف"] || "";
+            return String(actualId).trim() === String(propertyId).trim();
+        });
 
         if (!property) {
             container.className = "error-msg";
@@ -144,7 +149,7 @@ function renderDetails(property) {
         if(url) videosHtml += `<div class="media-item"><video src="${url}" controls playsinline></video></div>`;
     });
 
-    const mediaSectionTitle = currentLang === 'ar' ? "البوم الصور العقارية" : "Property Photo Gallery";
+    const mediaSectionTitle = currentLang === 'ar' ? "ألبوم الصور العقارية" : "Property Photo Gallery";
     const videoSectionTitle = currentLang === 'ar' ? "العروض المرئية والفيديو" : "Video Presentations";
 
     // حقن الكود النهائي داخل الصفحة

@@ -49,7 +49,6 @@
             overflow-x: hidden;
         }
 
-        /* الهيدر وعناصر التحكم المتجاوبة */
         header { 
             background-color: var(--bg-header);
             color: #fff; 
@@ -63,14 +62,10 @@
             gap: 15px;
         }
 
-        .header-content {
-            text-align: center;
-        }
-
+        .header-content { text-align: center; }
         header h1 { font-size: 2rem; line-height: 1.4; }
         header p { color: #1abc9c; margin-top: 5px; font-size: 1rem; }
 
-        /* الشعار (Logo) معزول محلياً وثابت */
         .logo-wrapper {
             width: 100px;
             height: 100px;
@@ -90,7 +85,6 @@
             object-fit: cover;
         }
 
-        /* حاوية أزرار التحكم */
         .controls-wrapper { 
             position: absolute;
             top: 15px; 
@@ -117,7 +111,6 @@
         }
         .lang-btn:hover, .theme-btn:hover { background: #16a085; }
 
-        /* شبكة عرض الكروت */
         .container { 
             max-width: 1200px;
             margin: 0 auto; 
@@ -127,7 +120,6 @@
             gap: 25px;
         }
 
-        /* كرت العقار المطور */
         .property-card { 
             background: var(--bg-card);
             border-radius: 8px; 
@@ -157,7 +149,6 @@
         .property-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .property-card:hover .property-image img { transform: scale(1.05); }
 
-        /* شارات الحالة الديناميكية */
         .badge { 
             position: absolute; 
             top: 15px; 
@@ -171,14 +162,12 @@
         }
         html[dir="ltr"] .badge { right: auto; left: 15px; }
         
-        /* الألوان التلقائية لحالات العقار */
-        .badge-sale { background: #e74c3c; }    /* أحمر للبيع */
-        .badge-rent { background: #2ecc71; }    /* أخضر للإيجار */
-        .badge-buy { background: #3498db; }     /* أزرق للشراء */
-        .badge-sold { background: #95a5a6; }    /* رمادي للمباع */
-        .badge-default { background: #1abc9c; } /* لون افتراضي مائل للتركواز */
+        .badge-sale { background: #e74c3c; }
+        .badge-rent { background: #2ecc71; }
+        .badge-buy { background: #3498db; }
+        .badge-sold { background: #95a5a6; }
+        .badge-default { background: #1abc9c; }
 
-        /* العين النابضة للمشاهدات الحية */
         .live-counter-eye {
             position: absolute;
             top: 15px;
@@ -197,21 +186,14 @@
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
         html[dir="ltr"] .live-counter-eye { left: auto; right: 15px; }
-        .live-counter-eye.active {
-            opacity: 1;
-            transform: scale(1);
-        }
-        .live-counter-eye i {
-            color: #e74c3c;
-            animation: pulseEyeItem 1.2s infinite ease-in-out;
-        }
+        .live-counter-eye.active { opacity: 1; transform: scale(1); }
+        .live-counter-eye i { color: #e74c3c; animation: pulseEyeItem 1.2s infinite ease-in-out; }
         @keyframes pulseEyeItem {
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.2); opacity: 0.7; }
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* تفاصيل الكرت */
         .property-details { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
         .price { color: #e74c3c; font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
         .title { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; color: var(--text-title); line-height: 1.4; }
@@ -223,7 +205,6 @@
         html[dir="rtl"] .icon-item i { margin-left: 5px; }
         html[dir="ltr"] .icon-item i { margin-right: 5px; }
 
-        /* أزرار الإجراءات والتواصل */
         .view-details-btn { display: block; text-align: center; background: #2c3e50; color: white; text-decoration: none; padding: 12px; border-radius: 6px; margin-bottom: 12px; font-weight: 600; font-size: 0.9rem; transition: background 0.3s; }
         .view-details-btn:hover { background: #1abc9c; }
 
@@ -234,7 +215,6 @@
         .btn-phone { background-color: #3498db; }
         .btn-facebook { background-color: #1877F2; }
 
-        /* مؤشر التحميل ورسائل الخطأ */
         .loading-indicator { grid-column: 1 / -1; text-align: center; padding: 40px; font-size: 1.2rem; color: var(--text-title); font-weight: bold; }
         .error-message { grid-column: 1 / -1; text-align: center; padding: 40px; color: #e74c3c; font-weight: bold; }
 
@@ -248,25 +228,17 @@
             header { padding: 30px 15px; gap: 10px; }
             .controls-wrapper { position: static; margin-bottom: 10px; }
         }
-        @media (max-width: 360px) {
-            header h1 { font-size: 1.6rem; }
-            .features-icons { flex-direction: column; gap: 8px; align-items: flex-start; }
-        }
     </style>
 </head>
 <body>
 
     <header>
         <div class="controls-wrapper">
-            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">
-                <i class="fa-solid fa-moon"></i>
-            </button>
-            <button class="lang-btn" onclick="toggleLanguage()">
-                <i class="fa-solid fa-globe"></i> <span id="langText">EN</span>
-            </button>
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
+            <button class="lang-btn" onclick="toggleLanguage()"><i class="fa-solid fa-globe"></i> <span id="langText">EN</span></button>
         </div>
         <div class="logo-wrapper">
-            <img src="jpg.jpeg" alt="Wed Logo" class="brand-logo">
+            <img src="logo.png" alt="Wed Logo" class="brand-logo" onerror="this.src='https://via.placeholder.com/100'">
         </div>
         <div class="header-content">
             <h1 id="headerTitle">شركة ود العقارية</h1>
@@ -288,6 +260,45 @@
         <p id="footerCopy">جميع الحقوق محفوظة © شركة ود العقارية 2026</p>
     </footer>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // إعدادات قاعدة بيانات مشروعك
+        const firebaseConfig = {
+            databaseURL: "https://my-sheets-app-c0eb3-default-rtdb.firebaseio.com" // رابط Firebase الخاص بك بدون json
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const dbRef = ref(database, 'sheetsData/rows');
+
+        window.cachedProperties = [];
+
+        // الاستماع الفوري للتحديثات من قوقل شيت بدون أي دقيقة تأخير واحدة
+        onValue(dbRef, (snapshot) => {
+            const rawData = snapshot.val();
+            if (rawData) {
+                // تحويل مصفوفة الصفوف المباشرة القادمة من الشيت إلى كائنات يفهمها التصميم
+                const headers = rawData[0];
+                const rows = rawData.slice(1);
+                
+                window.cachedProperties = rows.map((row, index) => {
+                    let obj = { id: index + 1 };
+                    headers.forEach((header, i) => {
+                        obj[header] = row[i];
+                    });
+                    return obj;
+                });
+
+                renderProperties(window.cachedProperties);
+            }
+        }, (error) => {
+            console.error("Firebase Error:", error);
+            document.getElementById('propertiesContainer').innerHTML = `<div class="error-message">فشل في الاتصال المباشر بقاعدة البيانات.</div>`;
+        });
+    </script>
+
     <script>
     const translations = {
         ar: {
@@ -302,7 +313,6 @@
             loading: "جاري جلب العقارات الحديثة...",
             error: "فشل في تحميل البيانات، يرجى إعادة المحاولة لاحقاً.",
             rooms: "غرف", bathrooms: "حمامات", area: "م²", liveView: "يشاهدونه الآن",
-            // ترجمة الحالات التلقائية للعربية في حال استيراد بيانات مكسورة
             sale: "للبيع", rent: "للايجار", buy: "شراء", sold: "مباع"
         },
         en: {
@@ -317,7 +327,6 @@
             loading: "Loading latest properties...",
             error: "Failed to load data, please try again later.",
             rooms: "Beds", bathrooms: "Baths", area: "m²", liveView: "viewing now",
-            // ترجمة الحالات التلقائية للإنجليزية
             sale: "For Sale", rent: "For Rent", buy: "For Buy", sold: "Sold"
         }
     };
@@ -341,51 +350,16 @@
         document.querySelector('#footerLink2 span').textContent = translations[lang].footerLink2;
         document.getElementById('footerCopy').textContent = translations[lang].footerCopy;
 
-        if (cachedProperties.length > 0) {
-            renderProperties(cachedProperties);
+        if (window.cachedProperties && window.cachedProperties.length > 0) {
+            renderProperties(window.cachedProperties);
         }
     }
 
     function toggleLanguage() {
         setLanguage(currentLang === 'ar' ? 'en' : 'ar');
     }
-    </script>
 
-    <script>
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    if (savedTheme) {
-        setTheme(savedTheme);
-    } else {
-        setTheme(systemPrefersDark ? 'dark' : 'light');
-    }
-
-    function setTheme(theme) {
-        htmlElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        const themeBtn = document.getElementById('themeBtn');
-        if (themeBtn) {
-            themeBtn.innerHTML = theme === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
-        }
-    }
-
-    function toggleTheme() {
-        const currentTheme = htmlElement.getAttribute('data-theme');
-        setTheme(currentTheme === 'dark' ? 'light' : 'dark');
-    }
-
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (!localStorage.getItem('theme')) {
-            setTheme(e.matches ? 'dark' : 'light');
-        }
-    });
-    </script>
-
-    <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzPjN2Dyd5CxQtXNoRTbZ4xMUB6toG_W6iaiKmPQGZm5e5d7SEHLD7B9bTqbM-MPsIm/exec";
-    let cachedProperties = [];
-
+    // دالة محسنة ومستقرة لتحويل روابط قوقل درايف للصور المصغرة مباشرة بدون سيرفر وسيط خارجي قد يتعطل
     function optimizeDriveImageUrl(url) {
         if (!url) return "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=500&q=80";
         if (url.includes('drive.google.com')) {
@@ -396,65 +370,19 @@
                 id = url.split('/d/')[1].split('/')[0];
             }
             if (id) {
-                return `https://thumbnailproduct.tech/api/drive?id=${id}`; 
+                return `https://docs.google.com/uc?export=view&id=${id}`; 
             }
         }
         return url;
     }
 
-    async function loadProperties() {
-        const container = document.getElementById('propertiesContainer');
-        const localData = localStorage.getItem('properties_cache');
-        const cacheTime = localStorage.getItem('properties_cache_time');
-        const now = new Date().getTime();
-
-        if (localData && cacheTime && (now - cacheTime < 5 * 60 * 1000)) {
-            cachedProperties = JSON.parse(localData);
-            renderProperties(cachedProperties);
-            return;
-        }
-
-        try {
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error("Network response error");
-            const data = await response.json();
-            
-            cachedProperties = data;
-            localStorage.setItem('properties_cache', JSON.stringify(data));
-            localStorage.setItem('properties_cache_time', now);
-            
-            renderProperties(cachedProperties);
-        } catch (error) {
-            console.error("API Fetch Error:", error);
-            if (localData) {
-                cachedProperties = JSON.parse(localData);
-                renderProperties(cachedProperties);
-            } else {
-                container.innerHTML = `<div class="error-message">${translations[currentLang].error}</div>`;
-            }
-        }
-    }
-
-    // دالة ذكية لمعالجة وتحديد الشارة ولونها بناءً على القيمة المستوردة من الجوجل شيت
     function getBadgeDetails(statusValue, lang) {
         if (!statusValue) return { class: "badge-default", text: lang === 'ar' ? "عقار" : "Property" };
-        
         const status = statusValue.trim().toLowerCase();
-
-        if (status.includes("بيع") || status.includes("sale")) {
-            return { class: "badge-sale", text: translations[lang].sale };
-        }
-        if (status.includes("إيجار") || status.includes("ايجار") || status.includes("rent")) {
-            return { class: "badge-rent", text: translations[lang].rent };
-        }
-        if (status.includes("شراء") || status.includes("buy")) {
-            return { class: "badge-buy", text: translations[lang].buy };
-        }
-        if (status.includes("مباع") || status.includes("sold")) {
-            return { class: "badge-sold", text: translations[lang].sold };
-        }
-
-        // إذا كانت القيمة مخصصة وجديدة تظهر كما هي في الشيت
+        if (status.includes("بيع") || status.includes("sale")) return { class: "badge-sale", text: translations[lang].sale };
+        if (status.includes("إيجار") || status.includes("ايجار") || status.includes("rent")) return { class: "badge-rent", text: translations[lang].rent };
+        if (status.includes("شراء") || status.includes("buy")) return { class: "badge-buy", text: translations[lang].buy };
+        if (status.includes("مباع") || status.includes("sold")) return { class: "badge-sold", text: translations[lang].sold };
         return { class: "badge-default", text: statusValue };
     }
 
@@ -469,20 +397,16 @@
 
         properties.forEach(item => {
             const id = item.ID || item.id || 1;
-            const title = item.العقار || "";
-            const price = item.السعر || "";
-            const desc = item.الوصف || "";
-            const rooms = item.عدد_الغرف || "0";
-            const baths = item.عدد_الحمامات || "0";
-            const area = item.المساحة || "0";
-            const imgUrl = optimizeDriveImageUrl(item.الصورة);
+            const title = item.العقار || item.title || "";
+            const price = item.السعر || item.price || "";
+            const desc = item.الوصف || item.description || "";
+            const rooms = item.عدد_الغرف || item.rooms || "0";
+            const baths = item.عدد_الحمامات || item.bathrooms || "0";
+            const area = item.المساحة || item.area || "0";
+            const imgUrl = optimizeDriveImageUrl(item.الصورة || item.image);
             
-            // قراءة حقل الحالة من قوقل شيت (يقبل عمود مسمى: الحالة أو النوع أو status)
             const sheetStatus = item.الحالة || item.النوع || item.status || "";
-            
-            // استدعاء الفلتر الذكي للحصول على التصنيف واللون المناسب
             const badge = getBadgeDetails(sheetStatus, currentLang);
-
             const initialViews = Math.floor(Math.random() * 8) + 3;
 
             const card = document.createElement('div');
@@ -505,7 +429,7 @@
                         <div class="icon-item"><i class="fa-solid fa-bath"></i> <span>${baths} ${translations[currentLang].bathrooms}</span></div>
                         <div class="icon-item"><i class="fa-solid fa-ruler-combined"></i> <span>${area} ${translations[currentLang].area}</span></div>
                     </div>
-                    <a href="apartment-details.html?id=${id}" class="view-details-btn">
+                    <a href="ثانوية.html?id=${id}" class="view-details-btn">
                         <i class="fa-solid fa-video"></i> <span>${translations[currentLang].viewBtn}</span>
                     </a>
                     <div class="contact-buttons">
@@ -520,17 +444,11 @@
 
         initializeEyeAutomation();
     }
-    </script>
 
-    <script>
     function initializeEyeAutomation() {
         const eyeElements = document.querySelectorAll('.live-counter-eye');
-        
         eyeElements.forEach(eye => {
-            setTimeout(() => {
-                eye.classList.add('active');
-            }, Math.random() * 3000);
-
+            setTimeout(() => { eye.classList.add('active'); }, Math.random() * 3000);
             setInterval(() => {
                 if (eye.classList.contains('active')) {
                     eye.classList.remove('active');
@@ -543,28 +461,25 @@
         });
     }
 
+    // إعدادات الـ Theme
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setTheme(savedTheme || (systemPrefersDark ? 'dark' : 'light'));
+
+    function setTheme(theme) {
+        htmlElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        const themeBtn = document.getElementById('themeBtn');
+        if (themeBtn) {
+            themeBtn.innerHTML = theme === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+        }
+    }
+    window.toggleTheme = function() {
+        setTheme(htmlElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
         setLanguage(currentLang);
-        loadProperties();
-    });
-    </script>
-
-    <script>
-    document.addEventListener('contextmenu', event => event.preventDefault());
-
-    document.addEventListener('keydown', event => {
-        if (event.key === 'F12' || event.keyCode === 123) {
-            event.preventDefault();
-            return false;
-        }
-        if (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'J' || event.key === 'C' || event.keyCode === 73 || event.keyCode === 74 || event.keyCode === 67)) {
-            event.preventDefault();
-            return false;
-        }
-        if (event.ctrlKey && (event.key === 'u' || event.key === 'U' || event.keyCode === 85)) {
-            event.preventDefault();
-            return false;
-        }
     });
     </script>
 </body>

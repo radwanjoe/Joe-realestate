@@ -5,20 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <script>
-        // 🛑 ضع رابط الـ API الخاص بـ Google Sheets هنا بين العلامتين "" 🛑
+        // 🛑 رابط الـ API الخاص بـ Google Sheets 
         window.GOOGLE_SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbwuLelt-EngMLn1P4FP6fdjbVR5RBSxoM30kiNxI0xshvWMsqEyUkNbnsH0YcwIjRgd/exec";
         
-        // روابط وأرقام التواصل الاجتماعي الخاصة بشركتك
+        // 🛑 روابط التواصل الاجتماعي
         window.CONTACT_WHATSAPP = "https://wa.me/201234567890"; 
         window.CONTACT_PHONE    = "tel:+201234567890";        
         window.CONTACT_FACEBOOK = "https://facebook.com/yourpage"; 
+
+        // 🛑 روابط صورة الشعار (اللوجو الأساسي والبديل في حال فشل التحميل)
+        window.LOGO_URL = "logo.png";
+        window.LOGO_FALLBACK_URL = "https://drive.google.com/file/d/1dRhfQbIhSZAc-b4iTS_hOrf7G87cT7z7/view?usp=sharing";
     </script>
+
     <title id="pageTitle">شركة ود العقارية - Wed Real Estate</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* 🎨 نظام الألوان والوضعين (الفاتح والمظلم) */
+        /* نظام الألوان والوضعين (الفاتح والمظلم) */
         :root {
             --bg-body: #f4f7f6; --text-main: #333; --text-title: #2c3e50; --text-muted: #7f8c8d;
             --bg-card: #fff; --border-card: #e2f0ea; --bg-features: #f8f9fa; --text-features: #555;
@@ -72,14 +77,13 @@
     </style>
 </head>
 <body>
-
     <header>
         <div class="controls-wrapper">
             <button class="theme-btn" onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
             <button class="lang-btn" onclick="toggleLanguage()"><i class="fa-solid fa-globe"></i> <span id="langText">EN</span></button>
         </div>
         <div class="logo-wrapper">
-            <img src="logo.png" alt="Wed Logo" class="brand-logo" onerror="this.src='https://drive.google.com/file/d/1dRhfQbIhSZAc-b4iTS_hOrf7G87cT7z7/view?usp=sharing'">
+            <img id="mainLogo" alt="Wed Logo" class="brand-logo">
         </div>
         <div class="header-content">
             <h1 id="headerTitle">شركة ود العقارية</h1>
@@ -102,6 +106,9 @@
     </footer>
 
     <script>
+        // ======================================================== 
+        // 4. وظيفة جلب البيانات من Google Sheets 
+        // ======================================================== 
         window.cachedProperties = [];
 
         async function loadProperties() {
@@ -110,7 +117,6 @@
                 const data = await response.json();
                 
                 if (Array.isArray(data)) {
-                    // المزامنة المباشرة مع المصفوفة الصافية القادمة من السكربت الخاص بك
                     window.cachedProperties = data;
                     renderProperties(window.cachedProperties);
                 } else if (data && data.status === "success" && data.data) {
@@ -124,117 +130,140 @@
                 document.getElementById('propertiesContainer').innerHTML = `<div class="error-message">فشل في جلب البيانات من Google Sheets. تأكد من تطابق الأعمدة.</div>`;
             }
         }
-    </script>
 
-    <script>
-    const translations = {
-        ar: {
-            pageTitle: "شركة ود العقارية - Wed Real Estate", headerTitle: "شركة ود العقارية", headerSub: "ابحث عن شقة أحلامك.. بيع, شراء, وتأجير بكل سهولة", langBtn: "EN", viewBtn: "عرض الفيديو والصور التفصيلية", footerLink1: "الشروط والأحكام", footerLink2: "مواقعنا على خرائط جوجل", footerCopy: "جميع الحقوق محفوظة © شركة ود العقارية 2026", loading: "جاري جلب العقارات الحديثة...", error: "فشل في تحميل البيانات، يرجى إعادة المحاولة لاحقاً.", rooms: "غرف", bathrooms: "حمامات", area: "م²", liveView: "يشاهدونه الآن", sale: "للبيع", rent: "للإيجار", buy: "شراء", sold: "مباع"
-        },
-        en: {
-            pageTitle: "Wed Real Estate - Home", headerTitle: "Wed Real Estate", headerSub: "Find your dream apartment.. Buy, sell, and rent with ease", langBtn: "AR", viewBtn: "View Video & Details", footerLink1: "Terms & Conditions", footerLink2: "Our Locations on Google Maps", footerCopy: "All Rights Reserved © Wed Real Estate 2026", loading: "Loading latest properties...", error: "Failed to load data, please try again later.", rooms: "Beds", bathrooms: "Baths", area: "m²", liveView: "viewing now", sale: "For Sale", rent: "For Rent", buy: "For Buy", sold: "Sold"
+        // ======================================================== 
+        // 5. نظام الترجمة وتغيير اللغات 
+        // ======================================================== 
+        const translations = {
+            ar: {
+                pageTitle: "شركة ود العقارية - Wed Real Estate", headerTitle: "شركة ود العقارية", headerSub: "ابحث عن شقة أحلامك.. بيع, شراء, وتأجير بكل سهولة", langBtn: "EN", viewBtn: "عرض الفيديو والصور التفصيلية", footerLink1: "الشروط والأحكام", footerLink2: "مواقعنا على خرائط جوجل", footerCopy: "جميع الحقوق محفوظة © شركة ود العقارية 2026", loading: "جاري جلب العقارات الحديثة...", error: "فشل في تحميل البيانات، يرجى إعادة المحاولة لاحقاً.", rooms: "غرف", bathrooms: "حمامات", area: "م²", liveView: "يشاهدونه الآن", sale: "للبيع", rent: "للإيجار", buy: "شراء", sold: "مباع"
+            },
+            en: {
+                pageTitle: "Wed Real Estate - Home", headerTitle: "Wed Real Estate", headerSub: "Find your dream apartment.. Buy, sell, and rent with ease", langBtn: "AR", viewBtn: "View Video & Details", footerLink1: "Terms & Conditions", footerLink2: "Our Locations on Google Maps", footerCopy: "All Rights Reserved © Wed Real Estate 2026", loading: "Loading latest properties...", error: "Failed to load data, please try again later.", rooms: "Beds", bathrooms: "Baths", area: "m²", liveView: "viewing now", sale: "For Sale", rent: "For Rent", buy: "For Buy", sold: "Sold"
+            }
+        };
+
+        let currentLang = localStorage.getItem('selectedLang') || 'ar';
+        const htmlElement = document.documentElement;
+
+        function setLanguage(lang) {
+            currentLang = lang; localStorage.setItem('selectedLang', lang);
+            htmlElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr'); htmlElement.setAttribute('lang', lang);
+            document.title = translations[lang].pageTitle;
+            document.getElementById('headerTitle').textContent = translations[lang].headerTitle;
+            document.getElementById('headerSub').textContent = translations[lang].headerSub;
+            document.getElementById('langText').textContent = translations[lang].langBtn;
+            document.querySelector('#footerLink1 span').textContent = translations[lang].footerLink1;
+            document.querySelector('#footerLink2 span').textContent = translations[lang].footerLink2;
+            document.getElementById('footerCopy').textContent = translations[lang].footerCopy;
+            if (window.cachedProperties && window.cachedProperties.length > 0) { renderProperties(window.cachedProperties); }
         }
-    };
 
-    let currentLang = localStorage.getItem('selectedLang') || 'ar';
-    const htmlElement = document.documentElement;
+        function toggleLanguage() { setLanguage(currentLang === 'ar' ? 'en' : 'ar'); }
 
-    function setLanguage(lang) {
-        currentLang = lang; localStorage.setItem('selectedLang', lang);
-        const html = document.getElementById('htmlPage');
-        html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr'); html.setAttribute('lang', lang);
-        document.title = translations[lang].pageTitle;
-        document.getElementById('headerTitle').textContent = translations[lang].headerTitle;
-        document.getElementById('headerSub').textContent = translations[lang].headerSub;
-        document.getElementById('langText').textContent = translations[lang].langBtn;
-        document.querySelector('#footerLink1 span').textContent = translations[lang].footerLink1;
-        document.querySelector('#footerLink2 span').textContent = translations[lang].footerLink2;
-        document.getElementById('footerCopy').textContent = translations[lang].footerCopy;
-        if (window.cachedProperties && window.cachedProperties.length > 0) { renderProperties(window.cachedProperties); }
-    }
-
-    function toggleLanguage() { setLanguage(currentLang === 'ar' ? 'en' : 'ar'); }
-
-    function optimizeDriveImageUrl(url) {
-        if (!url) return "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=500&q=80";
-        if (url.includes('drive.google.com')) {
-            let id = '';
-            if (url.includes('id=')) { id = url.split('id=')[1].split('&')[0]; } 
-            else if (url.includes('/d/')) { id = url.split('/d/')[1].split('/')[0]; }
-            if (id) return `https://docs.google.com/uc?export=view&id=${id}`;
+        // ======================================================== 
+        // 6. بناء وتصميم بطاقات العقارات (الريندر) 
+        // ======================================================== 
+        function optimizeDriveImageUrl(url) {
+            if (!url) return "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=500&q=80";
+            if (url.includes('drive.google.com')) {
+                let id = '';
+                if (url.includes('id=')) { id = url.split('id=')[1].split('&')[0]; } 
+                else if (url.includes('/d/')) { id = url.split('/d/')[1].split('/')[0]; }
+                if (id) return `https://docs.google.com/uc?export=view&id=${id}`;
+            }
+            return url;
         }
-        return url;
-    }
 
-    function getBadgeDetails(statusValue, lang) {
-        if (!statusValue) return { class: "badge-default", text: lang === 'ar' ? "عقار" : "Property" };
-        const status = statusValue.trim().toLowerCase();
-        if (status.includes("بيع") || status.includes("sale")) return { class: "badge-sale", text: translations[lang].sale };
-        if (status.includes("إيجار") || status.includes("ايجار") || status.includes("rent")) return { class: "badge-rent", text: translations[lang].rent };
-        if (status.includes("شراء") || status.includes("buy")) return { class: "badge-buy", text: translations[lang].buy };
-        if (status.includes("مباع") || status.includes("sold")) return { class: "badge-sold", text: translations[lang].sold };
-        return { class: "badge-default", text: statusValue };
-    }
+        function getBadgeDetails(statusValue, lang) {
+            if (!statusValue) return { class: "badge-default", text: lang === 'ar' ? "عقار" : "Property" };
+            const status = statusValue.trim().toLowerCase();
+            if (status.includes("بيع") || status.includes("sale")) return { class: "badge-sale", text: translations[lang].sale };
+            if (status.includes("إيجار") || status.includes("ايجار") || status.includes("rent")) return { class: "badge-rent", text: translations[lang].rent };
+            if (status.includes("شراء") || status.includes("buy")) return { class: "badge-buy", text: translations[lang].buy };
+            if (status.includes("مباع") || status.includes("sold")) return { class: "badge-sold", text: translations[lang].sold };
+            return { class: "badge-default", text: statusValue };
+        }
 
-    function renderProperties(properties) {
-        const container = document.getElementById('propertiesContainer'); container.innerHTML = '';
-        if (properties.length === 0) { container.innerHTML = `<div class="loading-indicator">${translations[currentLang].loading}</div>`; return; }
+        function renderProperties(properties) {
+            const container = document.getElementById('propertiesContainer'); container.innerHTML = '';
+            if (properties.length === 0) { container.innerHTML = `<div class="loading-indicator">${translations[currentLang].loading}</div>`; return; }
 
-        properties.forEach((item, index) => {
-            const id = item.ID || item.id || (index + 1); const title = item.العقار || item.title || ""; const price = item.السعر || item.price || ""; const desc = item.الوصف || item.description || ""; const rooms = item.عدد_الغرف || item.rooms || "0"; const baths = item.عدد_الحمامات || item.bathrooms || "0"; const area = item.المساحة || item.area || "0"; const imgUrl = optimizeDriveImageUrl(item.الصورة || item.image);
-            const sheetStatus = item.الحالة || item.النوع || item.status || ""; const badge = getBadgeDetails(sheetStatus, currentLang); const initialViews = Math.floor(Math.random() * 8) + 3;
+            properties.forEach((item, index) => {
+                const id = item.ID || item.id || (index + 1); 
+                const title = item.العقار || item.title || ""; 
+                const price = item.السعر || item.price || ""; 
+                const desc = item.الوصف || item.description || ""; 
+                const rooms = item.عدد_الغرف || item.rooms || "0"; 
+                const baths = item.عدد_الحمامات || item.bathrooms || "0"; 
+                const area = item.المساحة || item.area || "0"; 
+                const imgUrl = optimizeDriveImageUrl(item.الصورة || item.image);
+                const sheetStatus = item.الحالة || item.النوع || item.status || ""; 
+                const badge = getBadgeDetails(sheetStatus, currentLang); 
+                const initialViews = Math.floor(Math.random() * 8) + 3;
 
-            const card = document.createElement('div'); card.className = 'property-card'; card.setAttribute('data-id', id);
-            card.innerHTML = `
-                <div class="property-image">
-                    <span class="badge ${badge.class}">${badge.text}</span>
-                    <div class="live-counter-eye" id="eye-${id}"><i class="fa-solid fa-eye"></i> <span>${initialViews} ${translations[currentLang].liveView}</span></div>
-                    <img src="${imgUrl}" alt="${title}" loading="lazy">
-                </div>
-                <div class="property-details">
-                    <div class="price">${price}</div><h2 class="title">${title}</h2><p class="description">${desc}</p>
-                    <div class="features-icons">
-                        <div class="icon-item"><i class="fa-solid fa-bed"></i> <span>${rooms} ${translations[currentLang].rooms}</span></div>
-                        <div class="icon-item"><i class="fa-solid fa-bath"></i> <span>${baths} ${translations[currentLang].bathrooms}</span></div>
-                        <div class="icon-item"><i class="fa-solid fa-ruler-combined"></i> <span>${area} ${translations[currentLang].area}</span></div>
+                const card = document.createElement('div'); card.className = 'property-card'; card.setAttribute('data-id', id);
+                card.innerHTML = `
+                    <div class="property-image">
+                        <span class="badge ${badge.class}">${badge.text}</span>
+                        <div class="live-counter-eye" id="eye-${id}"><i class="fa-solid fa-eye"></i> <span>${initialViews} ${translations[currentLang].liveView}</span></div>
+                        <img src="${imgUrl}" alt="${title}" loading="lazy">
                     </div>
-                    <a href="ثانوية.html?id=${id}" class="view-details-btn"><i class="fa-solid fa-video"></i> <span>${translations[currentLang].viewBtn}</span></a>
-                    <div class="contact-buttons">
-                        <a href="${window.CONTACT_WHATSAPP}" target="_blank" class="btn-contact btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
-                        <a href="${window.CONTACT_PHONE}" class="btn-contact btn-phone"><i class="fa-solid fa-phone"></i></a>
-                        <a href="${window.CONTACT_FACEBOOK}" target="_blank" class="btn-contact btn-facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                    </div>
-                </div>`;
-            container.appendChild(card);
-        });
-        initializeEyeAutomation();
-    }
+                    <div class="property-details">
+                        <div class="price">${price}</div><h2 class="title">${title}</h2><p class="description">${desc}</p>
+                        <div class="features-icons">
+                            <div class="icon-item"><i class="fa-solid fa-bed"></i> <span>${rooms} ${translations[currentLang].rooms}</span></div>
+                            <div class="icon-item"><i class="fa-solid fa-bath"></i> <span>${baths} ${translations[currentLang].bathrooms}</span></div>
+                            <div class="icon-item"><i class="fa-solid fa-ruler-combined"></i> <span>${area} ${translations[currentLang].area}</span></div>
+                        </div>
+                        <a href="ثانوية.html?id=${id}" class="view-details-btn"><i class="fa-solid fa-video"></i> <span>${translations[currentLang].viewBtn}</span></a>
+                        <div class="contact-buttons">
+                            <a href="${window.CONTACT_WHATSAPP}" target="_blank" class="btn-contact btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                            <a href="${window.CONTACT_PHONE}" class="btn-contact btn-phone"><i class="fa-solid fa-phone"></i></a>
+                            <a href="${window.CONTACT_FACEBOOK}" target="_blank" class="btn-contact btn-facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        </div>
+                    </div>`;
+                container.appendChild(card);
+            });
+            initializeEyeAutomation();
+        }
 
-    function initializeEyeAutomation() {
-        document.querySelectorAll('.live-counter-eye').forEach(eye => {
-            setTimeout(() => { eye.classList.add('active'); }, Math.random() * 3000);
-            setInterval(() => {
-                if (eye.classList.contains('active')) { eye.classList.remove('active'); } 
-                else {
-                    const currentCount = Math.floor(Math.random() * 11) + 2;
-                    eye.querySelector('span').textContent = `${currentCount} ${translations[currentLang].liveView}`; eye.classList.add('active');
-                }
-            }, Math.floor(Math.random() * 8000) + 6000);
-        });
-    }
+        // ======================================================== 
+        // 7. التأثيرات التفاعلية وتشغيل الموقع عند التحميل 
+        // ======================================================== 
+        function initializeEyeAutomation() {
+            document.querySelectorAll('.live-counter-eye').forEach(eye => {
+                setTimeout(() => { eye.classList.add('active'); }, Math.random() * 3000);
+                setInterval(() => {
+                    if (eye.classList.contains('active')) { eye.classList.remove('active'); } 
+                    else {
+                        const currentCount = Math.floor(Math.random() * 11) + 2;
+                        eye.querySelector('span').textContent = `${currentCount} ${translations[currentLang].liveView}`; eye.classList.add('active');
+                    }
+                }, Math.floor(Math.random() * 8000) + 6000);
+            });
+        }
 
-    function setTheme(theme) {
-        htmlElement.setAttribute('data-theme', theme); localStorage.setItem('theme', theme);
-        const themeBtn = document.getElementById('themeBtn');
-        if (themeBtn) { themeBtn.innerHTML = theme === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>'; }
-    }
-    window.toggleTheme = function() { setTheme(htmlElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
-    
-    document.addEventListener("DOMContentLoaded", () => { 
-        setLanguage(currentLang); 
-        setTheme(localStorage.getItem('theme') || 'light'); 
-        loadProperties();
-    });
+        function setTheme(theme) {
+            htmlElement.setAttribute('data-theme', theme); localStorage.setItem('theme', theme);
+            const themeBtn = document.getElementById('themeBtn');
+            if (themeBtn) { themeBtn.innerHTML = theme === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>'; }
+        }
+        
+        window.toggleTheme = function() { setTheme(htmlElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+        
+        // نقطة انطلاق الموقع عند التحميل
+        document.addEventListener("DOMContentLoaded", () => { 
+            // تعيين اللوجو من قسم الإعدادات
+            const logoImg = document.getElementById('mainLogo');
+            logoImg.src = window.LOGO_URL;
+            logoImg.onerror = function() { this.src = window.LOGO_FALLBACK_URL; };
+
+            // تفعيل المظهر واللغة وجلب البيانات
+            setLanguage(currentLang); 
+            setTheme(localStorage.getItem('theme') || 'light'); 
+            loadProperties();
+        });
     </script>
 </body>
 </html>

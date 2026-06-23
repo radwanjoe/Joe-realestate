@@ -1,4 +1,3 @@
-HTML
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" id="htmlPage">
 <head>
@@ -158,11 +157,26 @@ HTML
         .property-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .property-card:hover .property-image img { transform: scale(1.05); }
 
-        /* شارات الحالة والمشاهدات الحية */
-        .badge { position: absolute; top: 15px; right: 15px; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; z-index: 2; }
+        /* شارات الحالة الديناميكية */
+        .badge { 
+            position: absolute; 
+            top: 15px; 
+            right: 15px; 
+            color: white; 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            z-index: 2; 
+        }
         html[dir="ltr"] .badge { right: auto; left: 15px; }
-        .badge-sale { background: #1abc9c; }
-        .badge-rent { background: #e67e22; }
+        
+        /* الألوان التلقائية لحالات العقار */
+        .badge-sale { background: #e74c3c; }    /* أحمر للبيع */
+        .badge-rent { background: #2ecc71; }    /* أخضر للإيجار */
+        .badge-buy { background: #3498db; }     /* أزرق للشراء */
+        .badge-sold { background: #95a5a6; }    /* رمادي للمباع */
+        .badge-default { background: #1abc9c; } /* لون افتراضي مائل للتركواز */
 
         /* العين النابضة للمشاهدات الحية */
         .live-counter-eye {
@@ -239,7 +253,7 @@ HTML
             .features-icons { flex-direction: column; gap: 8px; align-items: flex-start; }
         }
     </style>
-    </head>
+</head>
 <body>
 
     <header>
@@ -252,7 +266,7 @@ HTML
             </button>
         </div>
         <div class="logo-wrapper">
-            <img src="png.jpg" alt="Wed Logo" class="brand-logo">
+            <img src="jpg.jpeg" alt="Wed Logo" class="brand-logo">
         </div>
         <div class="header-content">
             <h1 id="headerTitle">شركة ود العقارية</h1>
@@ -273,6 +287,7 @@ HTML
         </div>
         <p id="footerCopy">جميع الحقوق محفوظة © شركة ود العقارية 2026</p>
     </footer>
+
     <script>
     const translations = {
         ar: {
@@ -286,7 +301,9 @@ HTML
             footerCopy: "جميع الحقوق محفوظة © شركة ود العقارية 2026",
             loading: "جاري جلب العقارات الحديثة...",
             error: "فشل في تحميل البيانات، يرجى إعادة المحاولة لاحقاً.",
-            rooms: "غرف", bathrooms: "حمامات", area: "م²", liveView: "يشاهدونه الآن"
+            rooms: "غرف", bathrooms: "حمامات", area: "م²", liveView: "يشاهدونه الآن",
+            // ترجمة الحالات التلقائية للعربية في حال استيراد بيانات مكسورة
+            sale: "للبيع", rent: "للايجار", buy: "شراء", sold: "مباع"
         },
         en: {
             pageTitle: "Wed Real Estate - Home",
@@ -299,7 +316,9 @@ HTML
             footerCopy: "All Rights Reserved © Wed Real Estate 2026",
             loading: "Loading latest properties...",
             error: "Failed to load data, please try again later.",
-            rooms: "Beds", bathrooms: "Baths", area: "m²", liveView: "viewing now"
+            rooms: "Beds", bathrooms: "Baths", area: "m²", liveView: "viewing now",
+            // ترجمة الحالات التلقائية للإنجليزية
+            sale: "For Sale", rent: "For Rent", buy: "For Buy", sold: "Sold"
         }
     };
 
@@ -322,7 +341,6 @@ HTML
         document.querySelector('#footerLink2 span').textContent = translations[lang].footerLink2;
         document.getElementById('footerCopy').textContent = translations[lang].footerCopy;
 
-        // تحديث الكروت الحالية إذا كانت مدمجة في الصفحة
         if (cachedProperties.length > 0) {
             renderProperties(cachedProperties);
         }
@@ -332,6 +350,7 @@ HTML
         setLanguage(currentLang === 'ar' ? 'en' : 'ar');
     }
     </script>
+
     <script>
     const savedTheme = localStorage.getItem('theme');
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -362,11 +381,11 @@ HTML
         }
     });
     </script>
+
     <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbzPjN2Dyd5CxQtXNoRTbZ4xMUB6toG_W6iaiKmPQGZm5e5d7SEHLD7B9bTqbM-MPsIm/exec";
     let cachedProperties = [];
 
-    // تحسين ومعالجة روابط صور قوقل درايف لزيادة السرعة وتقليل جودة التحميل غير الضرورية
     function optimizeDriveImageUrl(url) {
         if (!url) return "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=500&q=80";
         if (url.includes('drive.google.com')) {
@@ -377,7 +396,6 @@ HTML
                 id = url.split('/d/')[1].split('/')[0];
             }
             if (id) {
-                // إرجاع رابطThumbnail سريع ومحسّن الحجم بدلاً من الصورة الكاملة الثقيلة
                 return `https://thumbnailproduct.tech/api/drive?id=${id}`; 
             }
         }
@@ -386,8 +404,6 @@ HTML
 
     async function loadProperties() {
         const container = document.getElementById('propertiesContainer');
-        
-        // محاولة جلب من الكاش المحلي أولاً لتخفيف وقت التحميل وسرعة الاستجابة
         const localData = localStorage.getItem('properties_cache');
         const cacheTime = localStorage.getItem('properties_cache_time');
         const now = new Date().getTime();
@@ -419,6 +435,29 @@ HTML
         }
     }
 
+    // دالة ذكية لمعالجة وتحديد الشارة ولونها بناءً على القيمة المستوردة من الجوجل شيت
+    function getBadgeDetails(statusValue, lang) {
+        if (!statusValue) return { class: "badge-default", text: lang === 'ar' ? "عقار" : "Property" };
+        
+        const status = statusValue.trim().toLowerCase();
+
+        if (status.includes("بيع") || status.includes("sale")) {
+            return { class: "badge-sale", text: translations[lang].sale };
+        }
+        if (status.includes("إيجار") || status.includes("ايجار") || status.includes("rent")) {
+            return { class: "badge-rent", text: translations[lang].rent };
+        }
+        if (status.includes("شراء") || status.includes("buy")) {
+            return { class: "badge-buy", text: translations[lang].buy };
+        }
+        if (status.includes("مباع") || status.includes("sold")) {
+            return { class: "badge-sold", text: translations[lang].sold };
+        }
+
+        // إذا كانت القيمة مخصصة وجديدة تظهر كما هي في الشيت
+        return { class: "badge-default", text: statusValue };
+    }
+
     function renderProperties(properties) {
         const container = document.getElementById('propertiesContainer');
         container.innerHTML = '';
@@ -429,7 +468,6 @@ HTML
         }
 
         properties.forEach(item => {
-            // الإبقاء التام على المسميات المستوردة من الشيت الحالي لتجنب الأخطاء
             const id = item.ID || item.id || 1;
             const title = item.العقار || "";
             const price = item.السعر || "";
@@ -439,15 +477,12 @@ HTML
             const area = item.المساحة || "0";
             const imgUrl = optimizeDriveImageUrl(item.الصورة);
             
-            // تحديد شارة البيع أو الإيجار بناءً على المحتوى واللغة الحالية
-            let badgeClass = "badge-sale";
-            let badgeText = currentLang === 'ar' ? "للبيع" : "For Sale";
-            if (desc.includes("إيجار") || desc.includes("ايجار") || desc.includes("Rent") || desc.includes("rent")) {
-                badgeClass = "badge-rent";
-                badgeText = currentLang === 'ar' ? "للايجار" : "For Rent";
-            }
+            // قراءة حقل الحالة من قوقل شيت (يقبل عمود مسمى: الحالة أو النوع أو status)
+            const sheetStatus = item.الحالة || item.النوع || item.status || "";
+            
+            // استدعاء الفلتر الذكي للحصول على التصنيف واللون المناسب
+            const badge = getBadgeDetails(sheetStatus, currentLang);
 
-            // توليد قيم عشوائية واقعية لعدادات الأعين الوهمية المباشرة
             const initialViews = Math.floor(Math.random() * 8) + 3;
 
             const card = document.createElement('div');
@@ -455,7 +490,7 @@ HTML
             card.setAttribute('data-id', id);
             card.innerHTML = `
                 <div class="property-image">
-                    <span class="badge ${badgeClass}">${badgeText}</span>
+                    <span class="badge ${badge.class}">${badge.text}</span>
                     <div class="live-counter-eye" id="eye-${id}">
                         <i class="fa-solid fa-eye"></i> <span>${initialViews} ${translations[currentLang].liveView}</span>
                     </div>
@@ -486,17 +521,16 @@ HTML
         initializeEyeAutomation();
     }
     </script>
+
     <script>
     function initializeEyeAutomation() {
         const eyeElements = document.querySelectorAll('.live-counter-eye');
         
         eyeElements.forEach(eye => {
-            // إظهار العين بشكل عشوائي عند البدء لإعطاء طابع حيوي للمنصة
             setTimeout(() => {
                 eye.classList.add('active');
             }, Math.random() * 3000);
 
-            // جدولة التغيير العشوائي المستمر للظهور والاختفاء وتغيير الأرقام
             setInterval(() => {
                 if (eye.classList.contains('active')) {
                     eye.classList.remove('active');
@@ -505,7 +539,7 @@ HTML
                     eye.querySelector('span').textContent = `${currentCount} ${translations[currentLang].liveView}`;
                     eye.classList.add('active');
                 }
-            }, Math.floor(Math.random() * 8000) + 6000); // تحديث دوري تزامني ذكي بين 6 لـ 14 ثانية لكل كرت
+            }, Math.floor(Math.random() * 8000) + 6000);
         });
     }
 
@@ -514,6 +548,7 @@ HTML
         loadProperties();
     });
     </script>
+
     <script>
     document.addEventListener('contextmenu', event => event.preventDefault());
 
@@ -532,5 +567,5 @@ HTML
         }
     });
     </script>
-    </body>
+</body>
 </html>

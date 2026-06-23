@@ -46,7 +46,7 @@
             padding-bottom: 40px;
         }
 
-        /* الهيدر المتناسق تماماً مع الصفحة الرئيسية */
+        /* الهيدر المتناسق مع الصفحة الرئيسية */
         header { 
             background-color: var(--bg-nav);
             color: #fff; 
@@ -67,7 +67,7 @@
         header h1 { font-size: 2rem; line-height: 1.4; }
         header p { color: #1abc9c; margin-top: 5px; font-size: 1rem; }
 
-        /* تنسيق الشعار الدائري كما في الصفحة الرئيسية */
+        /* تنسيق الشعار الدائري */
         .logo-wrapper {
             width: 100px;
             height: 100px;
@@ -358,6 +358,17 @@
     let currentLang = localStorage.getItem('selectedLang') || 'ar';
     let currentPropertyData = null;
 
+    // صور عشوائية افتراضية للعقارات في حال كانت الخانات فارغة
+    const defaultImages = [
+        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
+    ];
+    // فيديو واجهة افتراضي
+    const defaultVideo = "https://www.youtube.com/embed/dQw4w9WgXcQ"; 
+    // موقع افتراضي (خريطة قوقل)
+    const defaultMap = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3453.5564843516515!2d31.2357116!3d30.0444196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzDCsDAyJzM5LjkiTiAzMcKwMTQnMDguNiJF!5e0!3m2!1sar!2seg!4v1625000000000!5m2!1sar!2seg";
+
     document.addEventListener("DOMContentLoaded", () => {
         setLanguage(currentLang); 
         fetchPropertyDetails();
@@ -412,7 +423,6 @@
         setTheme(currentTheme === 'dark' ? 'light' : 'dark');
     }
 
-    // جلب المعرف وقراءة الكاش أو الاستدعاء بدقة عالية متوافقة مع الشيت الخاص بك
     async function fetchPropertyDetails() {
         const urlParams = new URLSearchParams(window.location.search);
         const propertyId = urlParams.get('id');
@@ -473,25 +483,43 @@
     function renderDetails(item) {
         const mainContainer = document.getElementById('mainContainer');
         
-        // استخراج البيانات بحسب الحقول الحقيقية للجوجل شيت الخاص بك
-        const title = item.العقار || item.title || "";
-        const price = item.السعر || item.price || "";
-        const desc = item.الوصف || item.description || "";
+        // قراءة المسميات الجديدة بدقة مع مسميات احتياطية لضمان عدم حدوث خطأ
+        const title = item.العقار || item.title || "عقار مميز";
+        const price = item.السعر || item.price || "اتصل لمعرفة السعر";
+        const desc = item.الوصف || item.description || "لا يوجد وصف متوفر حالياً لهذا العقار.";
         const rooms = item.عدد_الغرف || item.rooms || "0";
         const baths = item.عدد_الحمامات || item.bathrooms || "0";
         const area = item.المساحة || item.area || "0";
-        const videoUrl = optimizeVideoUrl(item.الفيديو || item.video);
-        const mapUrl = item.الخريطة || item.map || "";
-        const galleryData = item.المعرض || item.gallery || "";
+        
+        // جلب الروابط بناءً على الأسماء الجديدة المدخلة من قبلك
+        let videoUrl = optimizeVideoUrl(item.الفيديوهات || item.Video || item.video || "");
+        let mapUrl = item.الموقع || item.map || "";
+        let galleryData = item.الصور_الإضافية || item.More_Images || item.gallery || "";
 
+        // تطبيق الشرط: إذا كان حقل الصور الإضافية فارغاً، يتم تعبئته بصور عشوائية
         let galleryHTML = "";
-        if (galleryData) {
+        if (galleryData && galleryData.trim() !== "") {
             const images = galleryData.split(',');
             images.forEach(imgSrc => {
                 if(imgSrc.trim()) {
                     galleryHTML += `<img src="${imgSrc.trim()}" class="gallery-item" alt="Gallery" onclick="window.open('${imgSrc.trim()}', '_blank')">`;
                 }
             });
+        } else {
+            // عرض الصور العشوائية الافتراضية
+            defaultImages.forEach(imgSrc => {
+                galleryHTML += `<img src="${imgSrc}" class="gallery-item" alt="Default Gallery" onclick="window.open('${imgSrc}', '_blank')">`;
+            });
+        }
+
+        // إذا كان حقل الفيديو فارغاً، يتم تعيين الفيديو العشوائي الافتراضي
+        if (!videoUrl || videoUrl.trim() === "") {
+            videoUrl = defaultVideo;
+        }
+
+        // إذا كان حقل الموقع فارغاً، يتم تعيين موقع افتراضي
+        if (!mapUrl || mapUrl.trim() === "") {
+            mapUrl = defaultMap;
         }
 
         let htmlContent = `
@@ -526,39 +554,37 @@
             </div>
         `;
 
-        if (videoUrl) {
-            htmlContent += `
-                <div class="section-block">
-                    <div class="section-title" id="videoTitle"><i class="fa-solid fa-video"></i> <span class="data-text">${translations[currentLang].videoTitle}</span></div>
-                    <div class="video-container">
-                        <iframe src="${videoUrl}" allowfullscreen></iframe>
-                    </div>
+        // عرض قسم الفيديو دائماً (إما الحقيقي أو الافتراضي)
+        htmlContent += `
+            <div class="section-block">
+                <div class="section-title" id="videoTitle"><i class="fa-solid fa-video"></i> <span class="data-text">${translations[currentLang].videoTitle}</span></div>
+                <div class="video-container">
+                    <iframe src="${videoUrl}" allowfullscreen></iframe>
                 </div>
-            `;
-        }
+            </div>
+        `;
 
-        if (galleryHTML) {
-            htmlContent += `
-                <div class="section-block">
-                    <div class="section-title" id="galleryTitle"><i class="fa-solid fa-images"></i> <span class="data-text">${translations[currentLang].galleryTitle}</span></div>
-                    <div class="gallery-grid">
-                        ${galleryHTML}
-                    </div>
+        // عرض قسم الصور دائماً (إما الحقيقية أو العشوائية الافتراضية)
+        htmlContent += `
+            <div class="section-block">
+                <div class="section-title" id="galleryTitle"><i class="fa-solid fa-images"></i> <span class="data-text">${translations[currentLang].galleryTitle}</span></div>
+                <div class="gallery-grid">
+                    ${galleryHTML}
                 </div>
-            `;
-        }
+            </div>
+        `;
 
-        if (mapUrl) {
-            htmlContent += `
-                <div class="section-block">
-                    <div class="section-title" id="mapTitle"><i class="fa-solid fa-map-location-dot"></i> <span class="data-text">${translations[currentLang].mapTitle}</span></div>
-                    <div class="video-container">
-                        <iframe src="${mapUrl}" allowfullscreen loading="lazy"></iframe>
-                    </div>
+        // عرض قسم الموقع دائماً (إما الحقيقي أو الافتراضي)
+        htmlContent += `
+            <div class="section-block">
+                <div class="section-title" id="mapTitle"><i class="fa-solid fa-map-location-dot"></i> <span class="data-text">${translations[currentLang].mapTitle}</span></div>
+                <div class="video-container">
+                    <iframe src="${mapUrl}" allowfullscreen loading="lazy"></iframe>
                 </div>
-            `;
-        }
+            </div>
+        `;
 
+        // أزرار التواصل السريع
         htmlContent += `
             <div class="contact-section-buttons">
                 <a href="https://wa.me/201234567890" target="_blank" class="btn-action btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>

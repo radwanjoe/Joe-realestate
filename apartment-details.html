@@ -208,6 +208,7 @@
             border-radius: 8px;
             background: #000;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-top: 15px;
         }
 
         .video-container iframe, .video-container video {
@@ -223,6 +224,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 15px;
+            margin-top: 15px;
         }
 
         .gallery-item {
@@ -380,7 +382,6 @@
         const backText = document.querySelector('#backBtn .data-text');
         if (backText) backText.textContent = translations[lang].backBtn;
         
-        // تعديل اتجاه سهم العودة متوافقاً مع اللغة
         const backIcon = document.querySelector('#backBtn i');
         if (backIcon) {
             backIcon.className = lang === 'ar' ? 'fa-solid fa-arrow-right' : 'fa-solid fa-arrow-left';
@@ -393,7 +394,6 @@
         }
     }
 
-    // إعدادات الوضع الليلي والنهاري
     const htmlElement = document.documentElement;
     const savedTheme = localStorage.getItem('theme') || 'light';
     setTheme(savedTheme);
@@ -412,7 +412,7 @@
         setTheme(currentTheme === 'dark' ? 'light' : 'dark');
     }
 
-    // جلب المعرف ID من الرابط وقراءة الكاش أو الشيت
+    // جلب المعرف وقراءة الكاش أو الاستدعاء بدقة عالية متوافقة مع الشيت الخاص بك
     async function fetchPropertyDetails() {
         const urlParams = new URLSearchParams(window.location.search);
         const propertyId = urlParams.get('id');
@@ -433,7 +433,6 @@
             }
         }
 
-        // جلب من السيرفر مباشرة إذا لم يتوفر كاش
         try {
             const API_URL = "https://script.google.com/macros/s/AKfycbzPjN2Dyd5CxQtXNoRTbZ4xMUB6toG_W6iaiKmPQGZm5e5d7SEHLD7B9bTqbM-MPsIm/exec";
             const response = await fetch(API_URL);
@@ -474,19 +473,20 @@
     function renderDetails(item) {
         const mainContainer = document.getElementById('mainContainer');
         
-        const title = item.العقار || "";
-        const price = item.السعر || "";
-        const desc = item.الوصف || "";
-        const rooms = item.عدد_الغرف || "0";
-        const baths = item.عدد_الحمامات || "0";
-        const area = item.المساحة || "0";
-        const videoUrl = optimizeVideoUrl(item.الفيديو);
-        const mapUrl = item.الخريطة || "";
+        // استخراج البيانات بحسب الحقول الحقيقية للجوجل شيت الخاص بك
+        const title = item.العقار || item.title || "";
+        const price = item.السعر || item.price || "";
+        const desc = item.الوصف || item.description || "";
+        const rooms = item.عدد_الغرف || item.rooms || "0";
+        const baths = item.عدد_الحمامات || item.bathrooms || "0";
+        const area = item.المساحة || item.area || "0";
+        const videoUrl = optimizeVideoUrl(item.الفيديو || item.video);
+        const mapUrl = item.الخريطة || item.map || "";
+        const galleryData = item.المعرض || item.gallery || "";
 
-        // معالجة معرض الصور المخصصة للفواصل
         let galleryHTML = "";
-        if (item.المعرض) {
-            const images = item.المعرض.split(',');
+        if (galleryData) {
+            const images = galleryData.split(',');
             images.forEach(imgSrc => {
                 if(imgSrc.trim()) {
                     galleryHTML += `<img src="${imgSrc.trim()}" class="gallery-item" alt="Gallery" onclick="window.open('${imgSrc.trim()}', '_blank')">`;
@@ -526,11 +526,10 @@
             </div>
         `;
 
-        // إدراج قسم الفيديو إن وجد
         if (videoUrl) {
             htmlContent += `
                 <div class="section-block">
-                    <div class="section-title"><i class="fa-solid fa-video"></i> ${translations[currentLang].videoTitle}</div>
+                    <div class="section-title" id="videoTitle"><i class="fa-solid fa-video"></i> <span class="data-text">${translations[currentLang].videoTitle}</span></div>
                     <div class="video-container">
                         <iframe src="${videoUrl}" allowfullscreen></iframe>
                     </div>
@@ -538,11 +537,10 @@
             `;
         }
 
-        // إدراج معرض الصور الإضافية إن وجد
         if (galleryHTML) {
             htmlContent += `
                 <div class="section-block">
-                    <div class="section-title"><i class="fa-solid fa-images"></i> ${translations[currentLang].galleryTitle}</div>
+                    <div class="section-title" id="galleryTitle"><i class="fa-solid fa-images"></i> <span class="data-text">${translations[currentLang].galleryTitle}</span></div>
                     <div class="gallery-grid">
                         ${galleryHTML}
                     </div>
@@ -550,11 +548,10 @@
             `;
         }
 
-        // إدراج الخريطة والموقع الجغرافي إن وجد
         if (mapUrl) {
             htmlContent += `
                 <div class="section-block">
-                    <div class="section-title"><i class="fa-solid fa-map-location-dot"></i> ${translations[currentLang].mapTitle}</div>
+                    <div class="section-title" id="mapTitle"><i class="fa-solid fa-map-location-dot"></i> <span class="data-text">${translations[currentLang].mapTitle}</span></div>
                     <div class="video-container">
                         <iframe src="${mapUrl}" allowfullscreen loading="lazy"></iframe>
                     </div>
@@ -562,7 +559,6 @@
             `;
         }
 
-        // أزرار التواصل الثابتة بالأسفل
         htmlContent += `
             <div class="contact-section-buttons">
                 <a href="https://wa.me/201234567890" target="_blank" class="btn-action btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>

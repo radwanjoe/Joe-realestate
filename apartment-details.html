@@ -435,7 +435,7 @@
 
         // جلب من السيرفر مباشرة إذا لم يتوفر كاش
         try {
-            const API_URL = "https://script.google.com/macros/s/AKfycbwF__Bgk6KSUPH-39bDG3MdvVRigqmRZ_uqLO6Rokmb0xqCvbhC_5j0vACJXSHAdVmS/exec";
+            const API_URL = "https://script.google.com/macros/s/AKfycbz8dJGxOY1fj7JhLRy1hOolauuavfqdGAQYevRsj9akeFWkdJzrsOsWNiSy6hgkHAOb/exec";
             const response = await fetch(API_URL);
             const data = await response.json();
             const found = data.find(item => (item.ID || item.id || "").toString() === propertyId.toString());

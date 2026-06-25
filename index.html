@@ -302,7 +302,6 @@
             loading: "جاري جلب العقارات الحديثة...",
             error: "فشل في تحميل البيانات، يرجى إعادة المحاولة لاحقاً.",
             rooms: "غرف", bathrooms: "حمامات", area: "م²", liveView: "يشاهدونه الآن",
-            // ترجمة الحالات التلقائية للعربية في حال استيراد بيانات مكسورة
             sale: "للبيع", rent: "للايجار", buy: "شراء", sold: "مباع"
         },
         en: {
@@ -317,7 +316,6 @@
             loading: "Loading latest properties...",
             error: "Failed to load data, please try again later.",
             rooms: "Beds", bathrooms: "Baths", area: "m²", liveView: "viewing now",
-            // ترجمة الحالات التلقائية للإنجليزية
             sale: "For Sale", rent: "For Rent", buy: "For Buy", sold: "Sold"
         }
     };
@@ -408,7 +406,8 @@
         const cacheTime = localStorage.getItem('properties_cache_time');
         const now = new Date().getTime();
 
-        if (localData && cacheTime && (now - cacheTime < 5 * 60 * 1000)) {
+        // تقليل مدة الكاش إلى دقيقة واحدة (1 * 60 * 1000 ميلي ثانية)
+        if (localData && cacheTime && (now - cacheTime < 1 * 60 * 1000)) {
             cachedProperties = JSON.parse(localData);
             renderProperties(cachedProperties);
             return;
@@ -419,11 +418,15 @@
             if (!response.ok) throw new Error("Network response error");
             const data = await response.json();
             
-            cachedProperties = data;
-            localStorage.setItem('properties_cache', JSON.stringify(data));
-            localStorage.setItem('properties_cache_time', now);
-            
-            renderProperties(cachedProperties);
+            // هنا تم التعديل الأساسي: دالة doGet ترجع البيانات بداخل مصفوفة data
+            if (data && data.status === "success" && data.data) {
+                cachedProperties = data.data; 
+                localStorage.setItem('properties_cache', JSON.stringify(cachedProperties));
+                localStorage.setItem('properties_cache_time', now);
+                renderProperties(cachedProperties);
+            } else {
+                throw new Error("Invalid structure or error status from script");
+            }
         } catch (error) {
             console.error("API Fetch Error:", error);
             if (localData) {
@@ -435,7 +438,6 @@
         }
     }
 
-    // دالة ذكية لمعالجة وتحديد الشارة ولونها بناءً على القيمة المستوردة من الجوجل شيت
     function getBadgeDetails(statusValue, lang) {
         if (!statusValue) return { class: "badge-default", text: lang === 'ar' ? "عقار" : "Property" };
         
@@ -454,7 +456,6 @@
             return { class: "badge-sold", text: translations[lang].sold };
         }
 
-        // إذا كانت القيمة مخصصة وجديدة تظهر كما هي في الشيت
         return { class: "badge-default", text: statusValue };
     }
 
@@ -462,7 +463,7 @@
         const container = document.getElementById('propertiesContainer');
         container.innerHTML = '';
 
-        if (properties.length === 0) {
+        if (!properties || properties.length === 0) {
             container.innerHTML = `<div class="loading-indicator">${translations[currentLang].loading}</div>`;
             return;
         }
@@ -477,12 +478,8 @@
             const area = item.المساحة || "0";
             const imgUrl = optimizeDriveImageUrl(item.الصورة);
             
-            // قراءة حقل الحالة من قوقل شيت (يقبل عمود مسمى: الحالة أو النوع أو status)
             const sheetStatus = item.الحالة || item.النوع || item.status || "";
-            
-            // استدعاء الفلتر الذكي للحصول على التصنيف واللون المناسب
             const badge = getBadgeDetails(sheetStatus, currentLang);
-
             const initialViews = Math.floor(Math.random() * 8) + 3;
 
             const card = document.createElement('div');

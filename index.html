@@ -70,26 +70,29 @@
         header h1 { font-size: 2rem; line-height: 1.4; }
         header p { color: #1abc9c; margin-top: 5px; font-size: 1rem; }
 
-        /* الشعار (Logo) معزول محلياً وثابت */
-        .logo-wrapper {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid #1abc9c;
-            overflow: hidden;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 3px rgba(0,0,0,0.2);
-        }
+  /* حاوية الشعار (الدائرة البيضاء الخارجية والإطار) */
+.logo-wrapper {
+    width: 100px;         /* تحديد العرض بـ 100 بكسل لضمان أبعاد مربعة */
+    height: 100px;        /* تحديد الارتفاع بـ 100 بكسل لضمان أبعاد مربعة */
+    border-radius: 50%;   /* تحويل المربع إلى دائرة مثالية بنسبة 50% */
+    border: 3px solid #1abc9c; /* إطار متصل بسمك 3 بكسل باللون التركوازي الخاص بالشركة */
+    overflow: hidden;     /* إخفاء وقص أي أجزاء من الصورة قد تخرج عن حدود الدائرة */
+    background: #fff;     /* خلفية بيضاء نقية خلف الشعار لضمان وضوحه في الوضع المظلم */
+    
+    /* نظام التوسيط المرن (Flexbox) لتتوسط الصورة الدائرة تماماً */
+    display: flex;        
+    align-items: center;  /* توسيط الصورة عمودياً (من الأعلى والأسفل) */
+    justify-content: center; /* توسيط الصورة أفقياً (من اليمين واليسار) */
+    
+    box-shadow: 0 4px 3px rgba(0,0,0,0.2); /* إضافة ظل خفيف أسفل الدائرة لإعطاء تأثير ثلاثي الأبعاد */
+}
 
-        .brand-logo {
-            width: 60%;
-            height: 60%;
-            object-fit: cover;
-        }
-
+/* صورة الشعار نفسها (صورة شركة ود العقارية) */
+.brand-logo {
+    width: 85%;           /* حجم عرض الصورة يمثل 85% من مساحة الدائرة البيضاء */
+    height: 85%;          /* حجم ارتفاع الصورة يمثل 85% من مساحة الدائرة البيضاء */
+    object-fit: contain;  /* إظهار الشعار كاملاً دون قصه أو تمطيطه مع الحفاظ على أبعاده الأصلية */
+}
         /* حاوية أزرار التحكم */
         .controls-wrapper { 
             position: absolute;

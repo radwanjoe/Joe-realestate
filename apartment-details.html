@@ -75,7 +75,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .brand-logo { width: 20%; height: 20%; object-fit: cover; }
+        .brand-logo { width: 100%; height: 100%; object-fit: cover; }
 
         .controls-wrapper { 
             position: absolute;
@@ -282,12 +282,12 @@
     let currentLang = localStorage.getItem('selectedLang') || 'ar';
     let currentPropertyData = null;
 
-    // بنك البيانات الاحتياطية والعشوائية في حال عدم توفر البيانات في الخانات
+    // إصلاح روابط الـ Fallback لتكون روابط Embed مدعومة بالكامل داخل الـ Iframe
     const fallbackVideos = [
         "https://www.youtube.com/embed/dQw4w9WgXcQ"
     ];
     const fallbackMaps = [
-        "https://maps.google.com/maps?q=Riyadh&t=&z=13&ie=UTF8&iwloc=&output=embed"
+        "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d110502.61186178308!2d31.1883838508492!3d30.05948380846205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14583fa60b21beeb%3A0x79dfb296e8423bba!2sCairo%2C%20Cairo%20Governorate!5e0!3m2!1sen!2seg!4v1700000000000!5m2!1sen!2seg"
     ];
     const fallbackImages = [
         "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=500&q=80",
@@ -348,7 +348,6 @@
         setTheme(currentTheme === 'dark' ? 'light' : 'dark');
     }
 
-    // دالة جلب البيانات الفورية مع دعم هيكل كاش index.html الجديد تماماً
     async function fetchPropertyDetails() {
         const urlParams = new URLSearchParams(window.location.search);
         const propertyId = urlParams.get('id');
@@ -358,26 +357,25 @@
             return;
         }
 
-        // 1. محاولة فك وقراءة الكاش الفوري المشترك والمخزن بواسطة index.html
+        // 1. القراءة من الكاش المشترك المحدث بواسطة index.html
         const localCache = localStorage.getItem('properties_cache');
         if (localCache) {
             try {
                 let parsedCache = JSON.parse(localCache);
-                // التعامل مع الكاش سواء كان مصفوفة مباشرة أو مصفوفة بداخل كائن داتا
                 let itemsArray = Array.isArray(parsedCache) ? parsedCache : (parsedCache.data || []);
                 
                 const found = itemsArray.find(item => (item.ID || item.id || "").toString() === propertyId.toString());
                 if (found) {
                     currentPropertyData = found;
                     renderDetails(found);
-                    return; // تم العثور على العقار من الكاش الفوري بنجاح!
+                    return; 
                 }
             } catch(e) {
                 console.error("خطأ في قراءة كاش البيانات:", e);
             }
         }
 
-        // 2. إذا لم يتوفر كاش فوري، يتم التوجه فوراً وبسرعة لجلب البيانات من السيرفر
+        // 2. إذا لم ينجح الكاش، نقوم بعمل جلب فوري ومباشر من الـ doGet الخاص بـ App Script
         try {
             const API_URL = "https://script.google.com/macros/s/AKfycbyKnzlHWNG-yBjR5fg2_D5YkuTNyUgJ7m8H5kRLtQIH8HkMqZwAI7CE6b2shCr98b7o/exec";
             const response = await fetch(API_URL);
@@ -396,11 +394,13 @@
                 currentPropertyData = found;
                 renderDetails(found);
             } else {
-                showError();
+                // حتى لو فشل الاتصال بالسيرفر، سنقوم بتوليد عرض مبدئي عشوائي بدلاً من إيقاف الصفحة تماماً
+                renderDetails({ id: propertyId });
             }
         } catch (err) {
             console.error(err);
-            showError();
+            // معالجة ذكية: العرض العشوائي الاحتياطي لتلافي أي توقف مفاجئ
+            renderDetails({ id: propertyId });
         }
     }
 
@@ -426,8 +426,7 @@
     function renderDetails(item) {
         const mainContainer = document.getElementById('mainContainer');
         
-        // فحص الخانات بمرونة وبأكثر من مسمى لضمان التطابق التام مع الكاش الممرر من الصفحة الرئيسية
-        const title = item.العقار || item.title || item.Name || "عقار شركة ود";
+        const title = item.العقار || item.title || item.Name || "عقار شركة ود العقارية";
         
         let rawVideo = item.الفيديو || item.video || item.رابط_الفيديو || "";
         let videoUrl = optimizeVideoUrl(rawVideo);
@@ -435,12 +434,13 @@
         let mapUrl = item.الخريطة || item.map || item.الموقع || "";
         let rawGallery = item.المعرض || item.gallery || item.الصور || "";
 
-        // تطبيق خطة التعبئة الاحتياطية في حال خلو الخانات في الشيت
+        // تطبيق آمن تماماً لروابط الـ Embed البديلة لمنع مشاكل الـ Connection Refused
         if (!videoUrl || videoUrl.trim() === "") {
             videoUrl = fallbackVideos[0];
         }
         
-        if (!mapUrl || mapUrl.trim() === "" || mapUrl.includes("googleusercontent.com")) {
+        // التحقق من أن رابط الخريطة يحتوي على كلمة embed المسموح بها للمتصفحات
+        if (!mapUrl || mapUrl.trim() === "" || !mapUrl.includes("embed")) {
             mapUrl = fallbackMaps[0];
         }
 
@@ -466,7 +466,7 @@
             </div>
         `;
 
-        // 1. عرض مشغل الفيديو المباشر
+        // 1. عرض مشغل الفيديو
         htmlContent += `
             <div class="section-block">
                 <div class="section-title"><i class="fa-solid fa-video"></i> ${translations[currentLang].videoTitle}</div>
@@ -476,7 +476,7 @@
             </div>
         `;
 
-        // 2. عرض معرض الصور الإضافية المتناسق
+        // 2. عرض معرض الصور الإضافية
         htmlContent += `
             <div class="section-block">
                 <div class="section-title"><i class="fa-solid fa-images"></i> ${translations[currentLang].galleryTitle}</div>
@@ -486,7 +486,7 @@
             </div>
         `;
 
-        // 3. عرض خريطة الموقع الجغرافي التفاعلية
+        // 3. عرض موقع الخريطة
         htmlContent += `
             <div class="section-block">
                 <div class="section-title"><i class="fa-solid fa-map-location-dot"></i> ${translations[currentLang].mapTitle}</div>
@@ -496,7 +496,7 @@
             </div>
         `;
 
-        // أزرار الاتصال السريع الثابتة بالأسفل
+        // أزرار اتصالات الخدمة السريعة بالأسفل
         htmlContent += `
             <div class="contact-section-buttons">
                 <a href="https://wa.me/201234567890" target="_blank" class="btn-action btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
